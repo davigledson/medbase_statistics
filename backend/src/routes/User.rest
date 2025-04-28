@@ -1,0 +1,17 @@
+
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "name":"aoiveiraf",
+    "Person:_key":"1"
+    
+}
+
+###
+GET http://localhost:3000/user/key/1/level/1
+###
+GET http://localhost:3000/user/key/2/level/1
+###
+GET http://localhost:3000/user/1
+

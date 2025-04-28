@@ -1,0 +1,50 @@
+
+# ###
+POST http://localhost:3000/question
+Content-Type: application/json
+
+{
+    
+    "question":"Qual o animal que voa?",
+    "alternative1":"camelo",
+    "alternative2":"gato",
+    "alternative3":"avestruz",
+    "alternative4":"abelha",
+    "correct":"4",
+    "Questionario:_key":"1"
+    
+      
+}
+###
+POST http://localhost:3000/question
+Content-Type: application/json
+
+   {
+    "question": "Qual o valor aproximado de π (pi)?",
+    "alternative1": "2,14",
+    "alternative2": "3,14",
+    "alternative3": "4,14",
+    "alternative4": "5,14",
+    "correct": "2",
+    "Questionario:_key": "1"
+  }
+
+###
+GET http://localhost:3000/question
+###
+GET http://localhost:3000/question/6786
+
+###
+GET http://localhost:3000/question/1/level/1
+
+//TENTAR CRIAR OU CORRIGIR (SEGUINDO A ESTRUTURA)
+###
+GET http://localhost:3000/question/1/Questionario?status=1
+
+
+###
+GET http://localhost:3000/question/1/Questionario
+
+
+###
+GET http://localhost:3000/question/key/1/level/2

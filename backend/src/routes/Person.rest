@@ -1,0 +1,29 @@
+
+
+POST http://localhost:3000/person
+Content-Type: application/json
+
+{
+    "name":"novo velho",
+    "_key":"1"
+}
+
+###
+GET http://localhost:3000/person
+###
+GET http://localhost:3000/person/1
+
+###
+GET http://localhost:3000/person/1/level/1
+
+//TENTAR CRIAR OU CORRIGIR (SEGUINDO A ESTRUTURA)
+###
+GET http://localhost:3000/person/1/Questionario?status=1
+
+
+###
+GET http://localhost:3000/person/1/Questionario
+
+
+###
+GET http://localhost:3000/person/key/1/level/2

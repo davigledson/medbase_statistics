@@ -1,0 +1,17 @@
+//git branch -lista os branch
+//git branch <cria um branch > -cria um branch
+//git branch -d  <nome do branch> - deletar o branch
+//git checkout  <nome do branch>  - mudar de branch
+//git checkout -b <nome do branch>  - mudar e criar um branch
+
+//unindo branchs
+
+//git merge <nome da branch> -- uni a branch nomeada com a atual
+
+// clonar diretamente na branch
+git clone --branch davi_expl https://gitlab.com/aoliveiraf/jaofe.git
+
+
+portas
+http://localhost:3003/ - frontend
+http://localhost:3000/ - back-endgti
