@@ -27,6 +27,7 @@ export default class extends AbstractView {
 
         if (!!_key) {
             this.doc = await fetchData(`/question/${_key}`, "GET");
+            this.questionariosRelacionados = await fetchData(`/question/${this.doc._key}/questionarios`,'GET')
         }
     }
 
@@ -78,33 +79,43 @@ export default class extends AbstractView {
                     <button class="btn btn-primary" onclick="saveForm('/question', '/question/list')">Salvar</button>
                 </div>
             </div>
+          ${await this.usedIn()}
         `;
     }
 
-    async relationship() { 
-        if (this.doc["Questionario:_key"]) {
-            const questionario = await fetchData(`/Questionario/${this.doc["Questionario:_key"]}`, "GET");
+    async usedIn() {
+        if (!this.doc._key) return "";
     
-            return `
-                <div class="mt-4">
-                    <h4>Questionário Relacionado:</h4>
-                    <div class="card shadow-sm border-info mb-3" style="max-width: 30rem;">
-                        <div class="card-header bg-info text-white">
-                            <strong>${questionario.name}</strong>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">${questionario.description || 'Sem descrição'}</p>
-                            <a href="/Questionario/${questionario._key}" class="btn btn-outline-info" data-link>
-                                Ver Questionário
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `;
+        const questionarios = this.questionariosRelacionados;
+    
+        if (!questionarios || questionarios.length === 0) {
+            return `<div class="alert alert-info mt-4">Esta pergunta não está associada a nenhum questionário.</div>`;
         }
     
-        return "";
+        return `
+            <div class="mt-4">
+                <h4>Questionários que utilizam esta pergunta:</h4>
+                <div class="row row-cols-1 row-cols-md-2 g-3 mt-2">
+                    ${questionarios.map(q => `
+                        <div class="col">
+                            <div class="card h-100 shadow-sm border-success">
+                                <div class="card-header bg-success text-white">
+                                    <strong>${q.name}</strong>
+                                </div>
+                                <div class="card-body">
+                                    <p>${q.description || 'Sem descrição'}</p>
+                                    <a href="/Questionario/${q._key}" class="btn btn-outline-success btn-sm" data-link>
+                                        Ver Questionário
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join("")}
+                </div>
+            </div>
+        `;
     }
+    
     
     
 }

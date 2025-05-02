@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const ObjectControl = require('../model/ObjectControl');
-
+const { aql } = require('arangojs');
 const oc = new ObjectControl();
 const _class = "Questionario";
 
@@ -44,7 +44,7 @@ router.put("/:_key", async (req, res) => {
 router.get("/", async (req, res) => {
     try {
         const { sort, order = 'asc' } = req.query;
-        let list = await oc.getListDoc(_class);
+        const list = await oc.find(_class, {}); 
 
         // Verifica se deve ordenar
         if (sort) {
@@ -82,6 +82,27 @@ router.get("/key/:_key/level/:level", async (req,res)=>{
     res.send(doc)
 })
 
+
+// Rota para buscar as perguntas de um questionário
+router.get('/:questionarioKey/questions', async (req, res) => {
+    const questionarioKey = req.params.questionarioKey;
+  
+    try {
+      // monta e executa a query AQL usando o tagged-template 'aql'
+      const cursor = await oc.dc.db.query(aql`
+        LET qdoc = DOCUMENT(Questionario, ${questionarioKey})
+        FOR q IN Question
+          FILTER q._key IN qdoc.questions
+        RETURN q
+      `);
+      const questions = await cursor.all();
+      res.send(questions);
+    } catch (err) {
+      console.error('Erro ao buscar perguntas:', err);
+      res.status(500).send({ error: 'Erro ao buscar perguntas' });
+    }
+  });
+  
 router.put("/:_key/person/:personKey", async (req, res) => {
     const QuestionarioKey = req.params._key;
     const personKey = req.params.personKey;

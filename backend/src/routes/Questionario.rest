@@ -19,6 +19,9 @@ GET http://localhost:3000/Questionario/key/2/level/1
 ###
 GET http://localhost:3000/Questionario/1
 
+###
+
+GET http://localhost:3000/Questionario/3/questions
 
 
 ###

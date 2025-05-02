@@ -6,11 +6,8 @@ Content-Type: application/json
   {
     "name": "Mariana Duarte",
     "description": "Paciente com bom progresso terapêutico.",
-    "questionario": ["2", "5"],
-    "statusQuestinarios": {
-      "2": "respondido",
-      "5": "respondido"
-    }
+    "questionarios": ["2", "5"]
+  
   }
 ###
 POST http://localhost:3000/patient/2/add-questionario
@@ -26,8 +23,7 @@ GET http://localhost:3000/patient
 GET http://localhost:3000/patient/1
 
 ###
-GET http://localhost:3000/patient/1/level/1
-
+GET http://localhost:3000/patient/1/questionarios
 //TENTAR CRIAR OU CORRIGIR (SEGUINDO A ESTRUTURA)
 ###
 GET http://localhost:3000/patient/1/Questionario?status=1

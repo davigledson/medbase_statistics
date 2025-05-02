@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const ObjectControl = require('../model/ObjectControl');
-
+const { aql } = require('arangojs');
 const oc = new ObjectControl();
 const _class = "Patient";
 
@@ -41,7 +41,7 @@ router.put("/:_key", async (req, res) => {
 
 router.get("/",async (req,res)=>{
 
-    const list = await oc.getListDoc(_class)
+    const list = await oc.find(_class, {}); 
     
     res.send(list)
 })
@@ -77,32 +77,23 @@ router.put("/reset",async (req,res)=>{
 
 //     res.send(Questionario);
 // });
-router.get("/:PatientKey/Questionario", async (req, res) => {
-    const PatientKey = req.params.PatientKey;
-    const status = req.query.status;
-    
-    // Monta a query de forma limpa
-    const query = {
-        $or: [
-            { "Patient_key": PatientKey },
-            { "Patient:_key": PatientKey }
-        ]
-    };
-
-    // Adiciona status apenas se foi fornecido
-    if (status !== undefined) {
-        query.status = status;
-    }
-
+// Retorna todos os questionários associados ao paciente
+router.get('/:key/questionarios', async (req, res) => {
+    const key = req.params.key;
     try {
-        const docs = await oc.find("Questionario", query);
-        res.send(docs);
-    } catch (err) {
-        console.error("Erro ao buscar questionários:", err);
-        res.status(500).send({ error: "Erro ao buscar questionários" });
+      const cursor = await oc.dc.db.query(aql`
+        LET pdoc = DOCUMENT(Patient, ${key})
+        FOR q IN Questionario
+          FILTER q._key IN pdoc.questionarios
+        RETURN q
+      `);
+      const questionarios = await cursor.all();
+      res.send(questionarios);
+    } catch (error) {
+      console.error("Erro ao buscar questionários do paciente:", error);
+      res.status(500).send({ error: "Erro ao buscar questionários do paciente" });
     }
-});
-
+  });
 
 // Adiciona um questionário a um paciente (em formato de lista)
 router.post("/:patientKey/add-questionario", async (req, res) => {

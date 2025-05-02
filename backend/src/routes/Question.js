@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const ObjectControl = require('../model/ObjectControl');
-
+const { aql } = require('arangojs');
 const oc = new ObjectControl();
 const _class = "Question";
 
@@ -23,11 +23,27 @@ router.get("/", async (req, res) => {
     res.send(list);
 });
 
-// Buscar documento por _key e level
-router.get("/key/:_key/level/:level", async (req, res) => {
-    const doc = await oc.getDocByKey(_class, req.params._key, req.params.level);
-    res.send(doc);
+
+
+// Retorna todos os questionários que usam a pergunta
+router.get('/:key/questionarios', async (req, res) => {
+  const key = req.params.key;
+  try {
+    const cursor = await oc.dc.db.query(aql`
+      FOR q IN Questionario
+        FILTER ${key} IN q.questions
+        RETURN q
+    `);
+    const result = await cursor.all();
+    res.send(result);
+  } catch (err) {
+    console.error("Erro ao buscar questionários que usam a pergunta:", err);
+    res.status(500).send({ error: "Erro interno" });
+  }
 });
+
+module.exports = router;
+
 
 // Buscar documento por _key (sem level)
 router.get("/:_key", async (req, res) => {
@@ -46,29 +62,6 @@ router.put("/reset", async (req, res) => {
     }
 });
 
-// Buscar Questionarios associados à Question (relacionados)
-router.get("/:QuestionKey/Questionario", async (req, res) => {
-    const QuestionKey = req.params.QuestionKey;
-    const status = req.query.status;
 
-    const query = {
-        $or: [
-            { "Question_key": QuestionKey },
-            { "Question:_key": QuestionKey }
-        ]
-    };
-
-    if (status !== undefined) {
-        query.status = status;
-    }
-
-    try {
-        const docs = await oc.find("Questionario", query);
-        res.send(docs);
-    } catch (err) {
-        console.error("Erro ao buscar questionários:", err);
-        res.status(500).send({ error: "Erro ao buscar questionários" });
-    }
-});
 
 module.exports = router;

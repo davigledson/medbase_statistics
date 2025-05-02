@@ -43,7 +43,7 @@ GET http://localhost:3000/question/1/Questionario?status=1
 
 
 ###
-GET http://localhost:3000/question/1/Questionario
+GET http://localhost:3000/question/1/questionarios
 
 
 ###
