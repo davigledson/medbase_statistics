@@ -6,7 +6,7 @@ Content-Type: application/json
   {
     "name": "Mariana Duarte",
     "description": "Paciente com bom progresso terapêutico.",
-    "questionarios": ["2", "5"]
+    "questionnaires": ["2", "5"]
   
   }
 ###

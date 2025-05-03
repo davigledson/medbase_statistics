@@ -10,10 +10,10 @@ export default class extends AbstractView {
             name: "",
             description: "",
             status: "",
-            questionarios: []
+            questionnaires: []
         };
 
-        this.questionarios = [];
+        this.questionnaires = [];
         this.questions = [];
     }
 
@@ -25,19 +25,19 @@ export default class extends AbstractView {
         const _key = this.params._key;
         if (_key) {
             this.doc = await fetchData(`/patient/${_key}`, "GET");
-            this.questionarios = await fetchData("/Questionario", "GET");
+            this.questionnaires = await fetchData("/questionnaire", "GET");
             this.questions = await fetchData("/question", "GET");
-            this.questionariosRelationship = await fetchData(`/Patient/${this.doc._key}/questionarios`, 'GET');
+            this.questionnairesRelationship = await fetchData(`/Patient/${this.doc._key}/questionarios`, 'GET');
         }
     }
 
     getModal() {
         return modalSelect({
-            id: "Questionario",
+            id: "Questionnaire",
             id_key: "Patient",
             label: "Questionário",
-            items: this.questionarios,
-            saveFunction: saveToModalSelect(`patient/${this.doc._key}/add-questionario`, "existingQuestionarios")
+            items: this.questionnaires,
+            saveFunction: saveToModalSelect(`patient/${this.doc._key}/add-questionario`, "existingQuestionnaires")
         });
     }
 
@@ -51,7 +51,7 @@ export default class extends AbstractView {
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <button class="btn btn-primary" onclick="SalvarPatient()">Salvar</button>
-                    ${this.doc._key ? `<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalQuestionario">Adicionar Questionário</button>` : ''}
+                    ${this.doc._key ? `<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalQuestionnaire">Adicionar Questionário</button>` : ''}
                 </div>
             </div>
             ${this.doc._key ? this.getModal() : ''}
@@ -62,7 +62,9 @@ export default class extends AbstractView {
 
     renderFormFields() {
         return `
+        
             <div class="form-floating mb-2">
+             <input class="form-control aof-input" type="hidden" id="questionnaires" value="${this.doc.questionnaires}">
                 <input class="form-control aof-input" type="text" id="name" value="${this.doc.name}" placeholder="name" required>
                 <label for="name">Nome:</label>
             </div>
@@ -83,18 +85,18 @@ export default class extends AbstractView {
 
 
     async renderQuestionariosSection() {
-      if (!this.doc.questionarios?.length) {
+      if (!this.doc.questionnaires?.length) {
           return `<div class="alert alert-info mt-4">Nenhum questionário associado.</div>`;
       }
 
       const map = {};
-      (this.questionariosRelationship || []).forEach(q => map[q._key] = q);
+      (this.questionnairesRelationship || []).forEach(q => map[q._key] = q);
       const accordionId = 'accordionQuestionarios';
       const headerId = 'headingAll';
       const collapseId = 'collapseAll';
 
       // Generate cards for all questionários
-      const cardsHtml = this.doc.questionarios.map(key => {
+      const cardsHtml = this.doc.questionnaires.map(key => {
           const q = map[key];
           if (!q) {
               return `<div class="card mb-3 border-danger"><div class="card-body text-danger">Questionário não encontrado: ${key}</div></div>`;
@@ -117,7 +119,7 @@ export default class extends AbstractView {
               <div class="card-body">
                   <p>${q.description || 'Sem descrição'}</p>
                   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">${questionCards}</div>
-                  <a href="/Questionario/${q._key}" target="_blank" class="btn btn-info btn-sm mt-3">Acessar</a>
+                  <a href="/questionnaire/${q._key}" target="_blank" class="btn btn-info btn-sm mt-3">Acessar</a>
               </div>
           </div>`;
       }).join('');
@@ -145,7 +147,7 @@ export default class extends AbstractView {
 
 window.SalvarPatient = async function() {
     const data = await copy();
-    data.questionarios = formatToList(data.questionarios);
+    data.questionnaires = formatToList(data.questionnaires);
     try {
         const url = data._key ? `/patient/${data._key}` : `/patient`;
         await save(url, data);

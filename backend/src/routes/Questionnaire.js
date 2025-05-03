@@ -122,7 +122,7 @@ router.get('/:key/pacientes', async (req, res) => {
     try {
       const cursor = await oc.dc.db.query(aql`
         FOR p IN Patient
-          FILTER ${key} IN p.questionarios
+          FILTER ${key} IN p.questionnaires
           RETURN p
       `);
       const pacientes = await cursor.all();

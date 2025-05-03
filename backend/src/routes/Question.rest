@@ -30,7 +30,7 @@ Content-Type: application/json
   }
 
 ###
-GET http://localhost:3000/question
+GET http://localhost:3000/Question
 ###
 GET http://localhost:3000/question/6786
 

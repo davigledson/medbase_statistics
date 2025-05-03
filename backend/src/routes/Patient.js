@@ -32,8 +32,8 @@ router.put("/:_key", async (req, res) => {
         const updatedDoc = await oc.save(_class, data);
         res.send(updatedDoc);
     } catch (error) {
-        console.error("Erro ao atualizar questionário:", error);
-        res.status(500).send({ error: "Erro ao atualizar questionário" });
+        console.error("Erro ao atualizar paciente:", error);
+        res.status(500).send({ error: "Erro ao atualizar paciente" });
     }
 });
 
@@ -45,13 +45,7 @@ router.get("/",async (req,res)=>{
     
     res.send(list)
 })
-router.get("/key/:_key/level/:level", async (req,res)=>{
 
-
-    const doc = await oc.getDocByKey(_class,req.params._key,req.params.level)
-    
-    res.send(doc)
-})
 
 router.get("/:_key",async (req,res)=>{
 
@@ -83,12 +77,12 @@ router.get('/:key/questionarios', async (req, res) => {
     try {
       const cursor = await oc.dc.db.query(aql`
         LET pdoc = DOCUMENT(Patient, ${key})
-        FOR q IN Questionario
-          FILTER q._key IN pdoc.questionarios
+        FOR q IN Questionnaire
+          FILTER q._key IN pdoc.questionnaires
         RETURN q
       `);
-      const questionarios = await cursor.all();
-      res.send(questionarios);
+      const questionnaires = await cursor.all();
+      res.send(questionnaires);
     } catch (error) {
       console.error("Erro ao buscar questionários do paciente:", error);
       res.status(500).send({ error: "Erro ao buscar questionários do paciente" });
@@ -111,13 +105,13 @@ router.post("/:patientKey/add-questionario", async (req, res) => {
         }
 
         // Inicializa o array se não existir
-        if (!Array.isArray(patient.questionarios)) {
-            patient.questionarios = [];
+        if (!Array.isArray(patient.questionnaires)) {
+            patient.questionnaires = [];
         }
 
         // Evita duplicação
-        if (!patient.questionarios.includes(questionario_key)) {
-            patient.questionarios.push(questionario_key);
+        if (!patient.questionnaires.includes(questionario_key)) {
+            patient.questionnaires.push(questionario_key);
         }
 
         const updatedDoc = await oc.save(_class, patient);

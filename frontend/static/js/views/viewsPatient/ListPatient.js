@@ -38,9 +38,9 @@ export default class extends AbstractView {
 
     renderPatients() {
         return this.list.map(patient => {
-            const questionarios = Array.isArray(patient.questionarios)
-                ? patient.questionarios.join(", ")
-                : (patient.questionarios || "Nenhum");
+            const questionarios = Array.isArray(patient.questionnaires)
+                ? patient.questionnaires.join(", ")
+                : (patient.questionnaires || "Nenhum");
     
             return `
                 <div class="col">
