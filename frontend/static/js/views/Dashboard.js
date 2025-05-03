@@ -49,10 +49,10 @@ export default class extends AbstractView {
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/Questionario/new">criar Questionario</a>
+                    <a class="nav-link" href="/questionnaire/new">criar Questionario</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="/Questionario/list">Listagem de Questionario</a>
+                    <a class="nav-link " href="/questionnaire/list">Listagem de Questionario</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link " href="/question/list">Listagem de Perguntas</a>

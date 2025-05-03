@@ -11,7 +11,7 @@ window.addQuestionToQuestionario = async function() {
     }
 
     try {
-        await fetchData(`/Questionario/${questionarioKey}/add-question`, "POST", {
+        await fetchData(`/questionnaire/${questionarioKey}/add-question`, "POST", {
             question_key: selectedQuestion
         });
 
@@ -43,15 +43,17 @@ export default class extends AbstractView {
     }
 
     async getMenu() {
-        return await this.StandardMenu('Questionario');
+        return await this.StandardMenu('questionnaire');
     }
 
     async init() {
         const _key = this.params._key;
         if (_key) {
-            this.doc = await fetchData(`/Questionario/${_key}`, "GET");
+            this.doc = await fetchData(`/questionnaire/${_key}`, "GET");
             this.questions = await fetchData("/Question", "GET");
-            this.questionRelationship = await fetchData(`/Questionario/${this.doc._key}/questions`, 'GET');
+            this.questionRelationship = await fetchData(`/questionnaire/${this.doc._key}/questions`, 'GET');
+
+            this.pacientesRelationship = await fetchData(`/questionnaire/${this.doc._key}/pacientes`, 'GET');
 
             // Carrega pessoa associada, se houver
             if (this.doc.Person_key) {
@@ -107,12 +109,13 @@ export default class extends AbstractView {
                 ${this.renderFormFields()}
               </div>
               <div class="card-footer d-flex justify-content-between">
-                <button class="btn btn-primary" onclick="SalvarQuestionario('/Questionario')">Salvar</button>
+                <button class="btn btn-primary" onclick="SalvarQuestionario('/questionnaire')">Salvar</button>
                 ${this.doc._key ? `<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalQuestion">Adicionar Pergunta</button>` : ''}
               <//div>
             </div>
             ${this.doc._key ? this.getModal() : ''}
             ${this.doc._key ? await this.renderPerguntasSection() : ''}
+            ${this.doc._key ? await this.renderPacientesSection() : ''}
         `;
         return html;
     }
@@ -185,15 +188,64 @@ export default class extends AbstractView {
           </div>
         </div>`;
     }
+
+     // Seção de Pacientes com um único Accordion
+  // Seção de Pacientes com um único Accordion
+async renderPacientesSection() {
+  const list = this.pacientesRelationship || [];
+  if (!list.length) {
+      return `<div class="alert alert-info mt-4">Nenhum paciente associado.</div>`;
+  }
+
+  const accordionId = 'accordionPacientes';
+  const headerId = 'headingPacientes';
+  const collapseId = 'collapsePacientes';
+
+  // Cards de Pacientes
+  const cardsHtml = list.map(p => {
+      return `
+      <div class="card mb-3">
+          <div class="card-header bg-secondary text-white">
+              <strong>${p.name}</strong>
+          </div>
+          <div class="card-body">
+           <p>Descrição: ${p.description || "Não informado"}</p>
+              <p>Email: ${p.email || "Não informado"}</p>
+              <p>Telefone: ${p.phone || "Não informado"}</p>
+          </div>
+          <div class="card-footer text-end">
+              <a href="/patient/${p._key}" class="btn btn-sm btn-info" data-link>Ver Detalhes</a>
+          </div>
+      </div>`;
+  }).join('');
+
+  return `
+  <div class="mt-5">
+      <div class="accordion" id="${accordionId}">
+          <div class="accordion-item">
+              <h2 class="accordion-header" id="${headerId}">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="false" aria-controls="${collapseId}">
+                      Pacientes Associados
+                  </button>
+              </h2>
+              <div id="${collapseId}" class="accordion-collapse collapse" aria-labelledby="${headerId}" data-bs-parent="#${accordionId}">
+                  <div class="accordion-body">
+                      ${cardsHtml}
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>`;
+}
 }
 
 window.SalvarQuestionario = async function(router) {
     let data = await copy();
     data.questions = formatToList(data.questions);
     try {
-        const url = data._key ? `/Questionario/${data._key}` : `/Questionario`;
+        const url = data._key ? `/questionnaire/${data._key}` : `/questionnaire`;
         await save(url, data);
-        window.location.href = "/Questionario/list";
+        window.location.href = "/questionnaire/list";
     } catch (err) {
         console.error("Erro ao salvar questionário:", err);
         alert("Erro ao salvar questionário.");

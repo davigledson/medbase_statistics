@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const person = require('./src/routes/Person')
 const user = require('./src/routes/User')
-const Questionario = require('./src/routes/Questionario')
+const questionnaire = require('./src/routes/Questionnaire')
 const question = require('./src/routes/Question')
 const patient = require('./src/routes/Patient')
 
@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use('/person',person)
 app.use('/user',user)
-app.use('/Questionario',Questionario)
+app.use('/questionnaire',questionnaire)
 app.use('/question',question)
 app.use('/patient',patient)
 

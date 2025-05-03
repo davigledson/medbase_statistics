@@ -1,13 +1,13 @@
 const DataControl = require("../database/DataControl");
 const Person = require("./Person");
 const User = require("./User");
-const Questionario = require("./Questionario");
+const Questionnaire = require("./Questionnaire");
 const Question = require("./Question");
 
 const obj_map = {
     Person,
     User,
-    Questionario,
+    Questionnaire,
     Question
 };
 

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const ObjectControl = require('../model/ObjectControl');
 const { aql } = require('arangojs');
 const oc = new ObjectControl();
-const _class = "Questionario";
+const _class = "Questionnaire";
 
 router.post("/",async (req,res)=>{
 
@@ -74,13 +74,7 @@ router.put("/reset",async (req,res)=>{
     await oc.reset([_class]);
 
 })
-router.get("/key/:_key/level/:level", async (req,res)=>{
 
-
-    const doc = await oc.getDocByKey(_class,req.params._key,req.params.level)
-    
-    res.send(doc)
-})
 
 
 // Rota para buscar as perguntas de um questionário
@@ -90,7 +84,7 @@ router.get('/:questionarioKey/questions', async (req, res) => {
     try {
       // monta e executa a query AQL usando o tagged-template 'aql'
       const cursor = await oc.dc.db.query(aql`
-        LET qdoc = DOCUMENT(Questionario, ${questionarioKey})
+        LET qdoc = DOCUMENT(Questionnaire, ${questionarioKey})
         FOR q IN Question
           FILTER q._key IN qdoc.questions
         RETURN q
@@ -121,52 +115,26 @@ router.put("/:_key/person/:personKey", async (req, res) => {
     }
 });
 
-
-
-router.get("/person/:personKey", async (req, res) => {
-    const personKey = req.params.personKey;
-
+// Retorna todos os pacientes que estão usando o questionário
+router.get('/:key/pacientes', async (req, res) => {
+    const key = req.params.key;
+  
     try {
-        const allExams = await oc.getListDoc(_class);
-        const filteredExams = allExams.filter(doc => {
-            return doc["Person_key"] == personKey || doc["Person:_key"] == personKey;
-        });
-
-        res.send(filteredExams);
-    } catch (error) {
-        console.error("Erro ao buscar Questionario da pessoa:", error);
-        res.status(500).send({ error: "Erro ao buscar Questionario da pessoa." });
+      const cursor = await oc.dc.db.query(aql`
+        FOR p IN Patient
+          FILTER ${key} IN p.questionarios
+          RETURN p
+      `);
+      const pacientes = await cursor.all();
+      res.send(pacientes);
+    } catch (err) {
+      console.error("Erro ao buscar pacientes:", err);
+      res.status(500).send({ error: "Erro interno" });
     }
-});
+  });
 
-router.get("/:questionarioKey/person", async (req, res) => {
-    const questionarioKey = req.params.questionarioKey;
-    
-    try {
-        
-        const questionario = await oc.getDocByKey(_class, questionarioKey);
-        
-        if (!questionario) {
-            return res.status(404).send({ error: "Questionário não encontrado" });
-        }
 
-        
-        const allPeople = await oc.getListDoc("Person");
-        
-        
-        const pessoasRelacionadas = allPeople.filter(person => {
-            // Verifica se a pessoa está vinculada ao questionário
-            // Pode ser por Person_key ou Person:_key no questionário
-            return questionario.Person_key === person._key || 
-                   questionario["Person:_key"] === person._key;
-        });
 
-        res.send(pessoasRelacionadas);
-    } catch (error) {
-        console.error("Erro ao buscar pessoas do questionário:", error);
-        res.status(500).send({ error: "Erro ao buscar pessoas relacionadas ao questionário" });
-    }
-});
 
 // Adiciona uma pergunta existente a um questionário
 router.post("/:questionarioKey/add-question", async (req, res) => {

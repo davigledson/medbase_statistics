@@ -3,10 +3,10 @@ import ListPerson from "./views/ListPerson.js";
 import Person from "./views/Person.js";
 import User from "./views/User.js";
 import ListUser from "./views/ListUser.js";
-import Questionario from "./views/ViewsQuestionario/Questionario.js";
-import ListQuestionario from "./views/ViewsQuestionario/ListQuestionario.js";
-import ListPersonQuestionario from "./views/ListPersonQuestionario.js";
-import ListQuestionarioPerson from "./views/ViewsQuestionario/ListQuestionarioPerson.js";
+import Questionnaire from "./views/ViewsQuestionnaire/Questionnaire.js";
+import ListQuestionnaire from "./views/ViewsQuestionnaire/ListQuestionnaire.js";
+//import ListPersonQuestionnaire from "./views/ListPersonQuestionnaire.js";
+//import ListQuestionnairePerson from "./views/ViewsQuestionnaire/ListQuestionnairePerson.js";
 
 import Question from "./views/viewsQuestion/Question.js";
 import ListQuestion from "./views/viewsQuestion/ListQuestion.js";
@@ -54,17 +54,17 @@ const router = async () => {
         { path: "/person/new", view: Person },
         { path: "/person/list", view: ListPerson },
         { path: "/person/:_key", view: Person },
-        { path: "/person/:_key/Questionario", view: ListPersonQuestionario },
+        //{ path: "/person/:_key/questionnaire", view: ListPersonQuestionnaire },
 
         { path: "/user/new", view: User },
         { path: "/user/list", view: ListUser },
         { path: "/user/:_key", view: User },
 
-        { path: "/Questionario/new", view: Questionario },
-        { path: "/Questionario/list", view: ListQuestionario },
-        { path: "/Questionario/:_key", view: Questionario },
-        { path: "/Questionario/:_key/person/:personKey", view: Questionario },
-        { path: "/Questionario/:_key/person", view: ListQuestionarioPerson },
+        { path: "/questionnaire/new", view: Questionnaire },
+        { path: "/questionnaire/list", view: ListQuestionnaire },
+        { path: "/questionnaire/:_key", view: Questionnaire },
+       // { path: "/questionnaire/:_key/person/:personKey", view: Questionnaire },
+       // { path: "/Questionnaire/:_key/person", view: ListQuestionnairePerson },
 
         { path: "/question/new", view: Question },
         { path: "/question/list", view: ListQuestion },

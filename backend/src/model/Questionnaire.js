@@ -1,4 +1,4 @@
-class Questionario {
+class Questionnaire {
     constructor(doc) {
         this.doc = doc;
         this.name = doc.name;
@@ -15,4 +15,4 @@ class Questionario {
 }
 
 
-module.exports = Questionario;
+module.exports = Questionnaire;

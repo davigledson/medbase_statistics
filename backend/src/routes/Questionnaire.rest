@@ -1,0 +1,47 @@
+
+GET http://localhost:3000/questionnaire
+###
+GET http://localhost:3000/Questionnaire
+###
+POST http://localhost:3000/Questionnaire
+Content-Type: application/json
+
+{
+    "name":"Questionario semanal",
+    "Person:_key":"1",
+    "Questionario":"psicotécnico",
+    "status":"3" 
+    
+}
+
+###
+GET http://localhost:3000/Questionnaire/key/1/level/1
+###
+GET http://localhost:3000/Questionnaire/key/2/level/1
+###
+GET http://localhost:3000/Questionnaire/1
+
+###
+
+GET http://localhost:3000/Questionnaire/3/questions
+
+
+###
+GET http://localhost:3000/Questionnaire/
+
+###
+GET http://localhost:3000/Questionnaire/person/1
+
+###
+GET http://localhost:3000/Questionnaire/6/pacientes
+###
+PUT http://localhost:3000/Questionnaire/14/person/1
+
+###
+GET http://localhost:3000/Questionnaire/14/person/1
+
+###
+GET http://localhost:3000/Questionnaire/14/person/1
+
+###
+GET http://localhost:3000/Questionnaire?sort=_key&order=desc
