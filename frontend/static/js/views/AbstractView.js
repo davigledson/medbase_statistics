@@ -16,6 +16,10 @@ export default class {
     async getMenu() {
         return "";
     }
+
+    async getWidget () {
+        return "";
+    }
    
      
     
