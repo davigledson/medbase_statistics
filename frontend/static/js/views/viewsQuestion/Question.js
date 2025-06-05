@@ -105,7 +105,7 @@ export default class extends AbstractView {
                                 </div>
                                 <div class="card-body">
                                     <p>${q.description || 'Sem descrição'}</p>
-                                    <a href="/Questionario/${q._key}" class="btn btn-outline-success btn-sm" data-link>
+                                    <a href="/questionnaire/${q._key}" class="btn btn-outline-success btn-sm" data-link>
                                         Ver Questionário
                                     </a>
                                 </div>

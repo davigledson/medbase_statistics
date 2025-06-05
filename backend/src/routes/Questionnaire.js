@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const ObjectControl = require('../model/ObjectControl');
+
 const { aql } = require('arangojs');
+const ObjectControl = require('../model/ObjectControl');
 const oc = new ObjectControl();
 const _class = "Questionnaire";
 

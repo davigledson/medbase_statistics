@@ -7,6 +7,7 @@ const user = require('./src/routes/User')
 const questionnaire = require('./src/routes/Questionnaire')
 const question = require('./src/routes/Question')
 const patient = require('./src/routes/Patient')
+const bot_connection = require('./src/routes/bot_connection')
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use('/user',user)
 app.use('/questionnaire',questionnaire)
 app.use('/question',question)
 app.use('/patient',patient)
+app.use('/bot_connection',bot_connection)
 
 const port = process.env.SERVER_PORT || 3000; 
 

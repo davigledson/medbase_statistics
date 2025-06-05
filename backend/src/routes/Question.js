@@ -30,7 +30,7 @@ router.get('/:key/questionarios', async (req, res) => {
   const key = req.params.key;
   try {
     const cursor = await oc.dc.db.query(aql`
-      FOR q IN Questionario
+      FOR q IN Questionnaire
         FILTER ${key} IN q.questions
         RETURN q
     `);

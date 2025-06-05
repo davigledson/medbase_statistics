@@ -10,6 +10,7 @@ export default class extends AbstractView {
             name: "",
             description: "",
             status: "",
+            phone: "",
             questionnaires: []
         };
 
@@ -68,6 +69,10 @@ export default class extends AbstractView {
              <input class="form-control aof-input" type="hidden" id="questionnaires" value="${this.doc.questionnaires}">
                 <input class="form-control aof-input" type="text" id="name" value="${this.doc.name}" placeholder="name" required>
                 <label for="name">Nome:</label>
+            </div>
+            <div class="form-floating mb-2">
+                <input class="form-control aof-input" type="tel" id="phone" value="${this.doc.phone}" placeholder="phone" required>
+                <label for="phone">Contado:</label>
             </div>
             <div class="form-floating mb-2">
                 <input class="form-control aof-input" type="text" id="description" value="${this.doc.description}" placeholder="description" required>
