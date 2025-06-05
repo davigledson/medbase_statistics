@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const ObjectControl = require('../model/ObjectControl');
 
+//Usuário Medico// Assistente
 const oc = new ObjectControl();
 const _class = "User";
 

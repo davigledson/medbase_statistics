@@ -32,6 +32,12 @@ class DataControl {
         return result[0]; // Retorna o documento correspondente à chave
     }
 
+    async getListDoc(_collectionName) {
+    const query = `FOR doc IN ${_collectionName} RETURN doc`;
+    const cursor = await this.db.query(query);
+    return await cursor.all();
+}
+
     async save(_collectionName, doc) {
         const collection = this.db.collection(_collectionName);
 

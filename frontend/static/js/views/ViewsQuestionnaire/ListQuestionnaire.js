@@ -36,7 +36,9 @@ export default class extends AbstractView {
     }
 
     async getMenu() {
-        return await this.StandardMenu('questionnaire');
+        
+         return await this.NavBar()
+        + await this.StandardMenu('questionnaire','Questionário');
     }
 
     filterList() {

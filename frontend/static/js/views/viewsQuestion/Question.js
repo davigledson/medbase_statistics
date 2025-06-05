@@ -19,7 +19,8 @@ export default class extends AbstractView {
     }
 
     async getMenu() {
-        return await this.StandardMenu('question');
+        return await this.NavBar()
+        + await this.StandardMenu('question','Pergunta');
     }
 
     async init() {
