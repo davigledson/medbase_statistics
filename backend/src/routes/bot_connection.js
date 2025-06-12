@@ -3,27 +3,25 @@ const router = require("express").Router();
 const { aql } = require("arangojs");
 const ObjectControl = require("../model/ObjectControl");
 const oc = new ObjectControl();
-
 function gerarPageFromPreguntas(questionDocs) {
   if (!Array.isArray(questionDocs)) {
     throw new Error("Esperava um array de perguntas.");
   }
 
-  // --- intro frame ---
+  // intro
   const introFrame = {
     text: `Aqui estão todas as suas perguntas:\n`,
     id: "/start",
     type: "OPTION",
     list: questionDocs.map((qDoc, idx) => ({
       id: String(idx + 1),
-      text: `${qDoc.question}\n`,
+      text: `${qDoc.question}`,      // só o enunciado aqui
       onSelect: { jump: `option:/q-${qDoc._key}` }
     }))
   };
 
   const options = [introFrame];
 
-  // --- para cada pergunta ---
   questionDocs.forEach((qDoc, idx) => {
     const key = qDoc._key;
     const qId = `/q-${key}`;
@@ -33,19 +31,14 @@ function gerarPageFromPreguntas(questionDocs) {
       ? "/exit"
       : `/q-${questionDocs[idx + 1]._key}`;
 
-    // 1) frame da pergunta
+    // 1) frame da pergunta (OPTION)
     options.push({
       id: qId,
-      text:
-        `${qDoc.question}\n` +
-        `1) ${qDoc.alternative1}\n` +
-        `2) ${qDoc.alternative2}\n` +
-        `3) ${qDoc.alternative3}\n` +
-        `4) ${qDoc.alternative4}\n`,
+      text: qDoc.question,   // apenas o enunciado da pergunta
       type: "OPTION",
       list: [1,2,3,4].map((i) => ({
         id: String(i),
-        text: `${qDoc["alternative" + i]}\n`,
+        text: qDoc["alternative" + i],    // cada alternativa é um item do menu
         onSelect: {
           jump:
             String(i) === qDoc.correct
@@ -55,29 +48,29 @@ function gerarPageFromPreguntas(questionDocs) {
       }))
     });
 
-    // 2) frame de feedback (retry / skip)
+    // 2) frame de feedback (OPTION) — só mensagem de erro
     options.push({
       id: fbId,
-      text: `❌ Resposta errada. O que deseja?\n`,
+      text: `❌ Resposta errada. O que deseja?\n`,  // só o erro, sem alternativas
       type: "OPTION",
       list: [
         {
           id: "1",
-          text: "1) Tentar novamente esta pergunta\n",
+          text: "Tentar novamente esta pergunta",
           onSelect: { jump: `option:${qId}` }
         },
         {
           id: "2",
           text: isLast
-            ? "2) Finalizar questionário\n"
-            : "2) Pular para próxima pergunta\n",
+            ? "Finalizar questionário"
+            : "Pular para próxima pergunta",
           onSelect: { jump: `option:${nextId}` }
         }
       ]
     });
   });
 
-  // --- frame final ---
+  // frame final
   options.push({
     id: "/exit",
     text: "🎉 Você concluiu todas as perguntas!",
