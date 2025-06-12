@@ -32,6 +32,12 @@ GET http://localhost:3000/patient/1/Questionario?status=1
 ###
 GET http://localhost:3000/patient/1/Questionario
 
+###
+GET http://localhost:3000/patient/1
+###
+GET http://localhost:3000/bot_connection/patient-page/1
 
 ###
-GET http://localhost:3000/patient/key/1/level/1
+GET http://localhost:3000/bot_connection/patient-questions-page/1
+
+

@@ -4,115 +4,123 @@ const { aql } = require("arangojs");
 const ObjectControl = require("../model/ObjectControl");
 const oc = new ObjectControl();
 
-
-function gerarPageFromQuestionario(questionario, questionDocs) {
-  if (
-    !questionario ||
-    !questionario._key ||
-    !Array.isArray(questionDocs)
-  ) {
-    throw new Error("Formato inválido para gerar Page do questionário.");
+function gerarPageFromPreguntas(questionDocs) {
+  if (!Array.isArray(questionDocs)) {
+    throw new Error("Esperava um array de perguntas.");
   }
 
-  //Frame de INTRODUCTION (type: OPTION) – aparece antes de qualquer pergunta
+  // --- intro frame ---
   const introFrame = {
-    text: `Bem-vindo! Este é o questionário "${questionario.name}".\n\n${questionario.description || ""}`,
+    text: `Aqui estão todas as suas perguntas:\n`,
     id: "/start",
     type: "OPTION",
-    list: [
-      {
-        id: "1",
-        text: "Sim.\n",
-        onSelect: {
-          jump:
-            questionDocs.length > 0
-              ? `option:/q-${questionDocs[0]._key}`
-              : "info:/exit"
-        }
-      },
-      {
-        id: "2",
-        text: "Não.\n",
-        onSelect: {
-          jump: "info:/exit"
-        }
-      }
-    ]
+    list: questionDocs.map((qDoc, idx) => ({
+      id: String(idx + 1),
+      text: `${qDoc.question}\n`,
+      onSelect: { jump: `option:/q-${qDoc._key}` }
+    }))
   };
 
-  //Para cada pergunta (qDoc), criamos um frame tipo OPTION
-  const questionFrames = questionDocs.map((qDoc, idx) => {
-    const frameId = `/q-${qDoc._key}`;
-    const isLast = idx === questionDocs.length - 1;
+  const options = [introFrame];
 
-    return {
-      id: frameId,
-      text: `${qDoc.question}\n`,
+  // --- para cada pergunta ---
+  questionDocs.forEach((qDoc, idx) => {
+    const key = qDoc._key;
+    const qId = `/q-${key}`;
+    const fbId = `/wrong-${key}`;
+    const isLast = idx === questionDocs.length - 1;
+    const nextId = isLast
+      ? "/exit"
+      : `/q-${questionDocs[idx + 1]._key}`;
+
+    // 1) frame da pergunta
+    options.push({
+      id: qId,
+      text:
+        `${qDoc.question}\n` +
+        `1) ${qDoc.alternative1}\n` +
+        `2) ${qDoc.alternative2}\n` +
+        `3) ${qDoc.alternative3}\n` +
+        `4) ${qDoc.alternative4}\n`,
+      type: "OPTION",
+      list: [1,2,3,4].map((i) => ({
+        id: String(i),
+        text: `${qDoc["alternative" + i]}\n`,
+        onSelect: {
+          jump:
+            String(i) === qDoc.correct
+              ? `option:${nextId}`
+              : `option:${fbId}`
+        }
+      }))
+    });
+
+    // 2) frame de feedback (retry / skip)
+    options.push({
+      id: fbId,
+      text: `❌ Resposta errada. O que deseja?\n`,
       type: "OPTION",
       list: [
         {
           id: "1",
-          text: `${qDoc.alternative1}\n`,
-          onSelect: {
-            jump: isLast
-              ? "info:/exit"                                
-              : `option:/q-${questionDocs[idx + 1]._key}`   
-          }
+          text: "1) Tentar novamente esta pergunta\n",
+          onSelect: { jump: `option:${qId}` }
         },
         {
           id: "2",
-          text: `${qDoc.alternative2}\n`,
-          onSelect: {
-            jump: isLast
-              ? "info:/exit"
-              : `option:/q-${questionDocs[idx + 1]._key}`
-          }
-        },
-        {
-          id: "3",
-          text: `${qDoc.alternative3}\n`,
-          onSelect: {
-            jump: isLast
-              ? "info:/exit"
-              : `option:/q-${questionDocs[idx + 1]._key}`
-          }
-        },
-        {
-          id: "4",
-          text: `${qDoc.alternative4}\n`,
-          onSelect: {
-            jump: isLast
-              ? "info:/exit"
-              : `option:/q-${questionDocs[idx + 1]._key}`
-          }
+          text: isLast
+            ? "2) Finalizar questionário\n"
+            : "2) Pular para próxima pergunta\n",
+          onSelect: { jump: `option:${nextId}` }
         }
       ]
-    };
+    });
   });
 
-  //Frame final de “exit” (type: INFO)
-  const exitFrame = {
+  // --- frame final ---
+  options.push({
     id: "/exit",
+    text: "🎉 Você concluiu todas as perguntas!",
     type: "INFO",
-    text: "Questionário finalizado. Obrigado por participar!",
     exit: true
-  };
+  });
 
-  //Montagem final do Page
   return {
-    id: questionario._key,
-    _key: questionario._key,
+    id: "patient-questions",
+    _key: "patient-questions",
     intro: {
       type: "INTRO",
       text: introFrame.text,
       jump: "option:/start"
     },
-    // Colocamos o INTRO FRAME e todos os FRAMES DE PERGUNTA em `options`
-    options: [introFrame, ...questionFrames],
-    forms: [],           
-    info: [exitFrame]    
+    options,
+    forms: [],
+    info: []
   };
 }
+
+
+// rota
+router.get("/patient-questions-page/:patientKey", async (req, res) => {
+  try {
+    const patient = await oc.getDocByKey("Patient", req.params.patientKey);
+    if (!patient) return res.status(404).json({ error: "Paciente não encontrado" });
+
+    const cursor = await oc.dc.db.query(aql`
+      LET pq = DOCUMENT(Patient, ${patient._key})
+      FOR q IN Question
+        FILTER q["Questionario:_key"] IN pq.questionnaires
+        RETURN q
+    `);
+    const questionDocs = await cursor.all();
+
+    const page = gerarPageFromPreguntas(questionDocs);
+    return res.json(page);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 
 // === Rota para gerar o Page completo de um questionário
