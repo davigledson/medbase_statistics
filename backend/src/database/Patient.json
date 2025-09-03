@@ -1,6 +1,0 @@
-[
-    {"name":"Ana Beatriz","description":"Paciente com histórico de ansiedade.","questionario":["1","2"],"statusQuestinarios":{"1":"respondido","2":"pendente"},"_key":"1","questionarios":["1","2","8","16","6","14","19","17"]},
-
-{"_key":"2","questionarios":["1","19","10","4","7","16"],"name":"Mariana Duarte","description":"Paciente com bom progresso terapêutico.","status":"3"}
-
-]

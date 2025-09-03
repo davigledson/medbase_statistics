@@ -16,7 +16,7 @@ Content-Type: application/json
       
 }
 ###
-POST http://localhost:3000/question
+PUT http://localhost:3000/question
 Content-Type: application/json
 
    {

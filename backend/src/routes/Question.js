@@ -11,10 +11,19 @@ router.post("/", async (req, res) => {
     res.send(doc);
 });
 
-router.put("/", async (req, res) => {
-    const docB = req.body;
-    const doc = await oc.save(_class, docB);
-    res.send(doc);
+router.put("/:_key", async (req, res) => {
+     const _key = req.params._key;
+    const data = req.body;
+
+    try {
+        data._key = _key;
+
+        const updatedDoc = await oc.save(_class, data);
+        res.send(updatedDoc);
+    } catch (error) {
+        console.error("Erro ao atualizar pergunta:", error);
+        res.status(500).send({ error: "Erro ao atualizar pergunta" });
+    }
 });
 
 // Buscar todos (Listar tudo)

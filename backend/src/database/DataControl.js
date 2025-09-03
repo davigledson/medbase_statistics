@@ -1,12 +1,12 @@
 
 const path = require("path");
-const { Database } = require("arangojs"); // Corrigido aqui!
+const { Database } = require("arangojs"); 
 
 
 class DataControl {
     constructor() {
         this.db = new Database({
-            url: "http://127.0.0.1:8529", // seu endpoint
+            url: "http://127.0.0.1:8529", // endpoint do arango
         });
         this.db.useBasicAuth("root", "1234"); // usuário e senha
         this.db.useDatabase("mydb"); // usa o banco
