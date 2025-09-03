@@ -2,7 +2,6 @@
 const path = require("path");
 const { Database } = require("arangojs"); 
 
-
 class DataControl {
     constructor() {
         this.db = new Database({

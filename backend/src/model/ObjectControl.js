@@ -1,11 +1,9 @@
 const DataControl = require("../database/DataControl");
-const Person = require("./Person");
 const User = require("./User");
 const Questionnaire = require("./Questionnaire");
 const Question = require("./Question");
 
 const obj_map = {
-    Person,
     User,
     Questionnaire,
     Question
@@ -21,7 +19,7 @@ class ObjectControl {
     }
 
     async getDocAsObj(_class, key) {
-        const doc = await this.dc.getDocByKey(_class, key); // <- Faltava um await aqui
+        const doc = await this.dc.getDocByKey(_class, key); 
         return new obj_map[_class](doc);
     }
 
@@ -30,7 +28,7 @@ class ObjectControl {
     }
 
     async reset(listClass) {
-        await this.dc.reset(listClass); // <- Faltava um await aqui também
+        await this.dc.reset(listClass); 
     }
 
     async getListDoc(_class) {

@@ -4,6 +4,20 @@ const { aql } = require('arangojs');
 const oc = new ObjectControl();
 const _class = "Patient";
 
+router.get("/",async (req,res)=>{
+
+    const list = await oc.find(_class, {}); 
+    
+    res.send(list)
+})
+
+router.get("/:_key",async (req,res)=>{
+
+
+    const doc = await oc.getDocByKey(_class,req.params._key)
+    
+    res.send(doc)
+})
 router.post("/",async (req,res)=>{
 
     const docB = req.body
@@ -39,21 +53,7 @@ router.put("/:_key", async (req, res) => {
 
 
 
-router.get("/",async (req,res)=>{
 
-    const list = await oc.find(_class, {}); 
-    
-    res.send(list)
-})
-
-
-router.get("/:_key",async (req,res)=>{
-
-
-    const doc = await oc.getDocByKey(_class,req.params._key)
-    
-    res.send(doc)
-})
 
 router.put("/reset",async (req,res)=>{
 

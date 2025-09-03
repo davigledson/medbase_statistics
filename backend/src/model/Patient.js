@@ -5,7 +5,7 @@ class Patient {
         this.description = doc.description
         this.phone = doc.phone
         this.questionnaires = doc.questionnaires
-        this.statusQuestinarios = doc.statusQuestinarios //aqui salva os status das reposta dos questionarios
+        this.statusQuestinarios = doc.statusQuestinarios // salva os status das repostas dos questionários
         
         
 
