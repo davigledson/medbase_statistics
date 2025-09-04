@@ -1,0 +1,82 @@
+###
+# Criar um novo MessageHistory (POST /message-history)
+POST http://localhost:3000/message-history
+Content-Type: application/json
+
+{
+  "QuestionnaireId": "1",
+  "PatientId": "2",
+  "messages": [],
+  "score": null,
+  "sentAt": "2025-09-03T21:00:00.000Z",
+  "questionnaireState": "sent"
+}
+
+###
+
+POST http://localhost:3000/message-history
+Content-Type: application/json
+
+{
+  "QuestionnaireId": "1",
+  "PatientId": "3",
+  "messages": [
+    {
+      "text": "1.",
+      "text": "dois",
+      "text": "como que responde isso?"
+      
+    }
+  ],
+  "score": null,
+  "questionnaireState": "sent"
+}
+
+###
+
+GET http://localhost:3000/message-history/1
+Accept: application/json
+
+###
+
+PUT http://localhost:3000/message-history/1
+Content-Type: application/json
+
+{
+  "_key": "1",
+  "QuestionnaireId": "1",
+  "PatientId": "2",
+  "messages": [
+    {
+      "text": "1.",
+      "text": "dois",
+      "text": "como que responde isso?"
+      
+    }
+  ],
+  "score": 88,
+  "questionnaireState": "completed",
+  "sentAt": "2025-09-03T21:10:00.000Z"
+}
+
+###
+
+PUT http://localhost:3000/message-history
+Content-Type: application/json
+
+{
+  "_key": "1", 
+  "QuestionnaireId": "1",
+  "PatientId": "3",
+  "messages": [
+    {
+      "text": "1.",
+      "text": "dois",
+      "text": "como que responde isso?"
+      
+    }
+  ],
+  "score": 74,
+  "questionnaireState": "completed",
+  "sentAt": "2025-09-03T21:15:00.000Z"
+}

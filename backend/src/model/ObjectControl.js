@@ -2,11 +2,13 @@ const DataControl = require("../database/DataControl");
 const User = require("./User");
 const Questionnaire = require("./Questionnaire");
 const Question = require("./Question");
+const MessageHistory = require('./MessageHistory')
 
 const obj_map = {
     User,
     Questionnaire,
-    Question
+    Question,
+    MessageHistory
 };
 
 class ObjectControl {

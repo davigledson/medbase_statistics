@@ -8,6 +8,7 @@ async function init() {
     "Patient",
     "Question",
     "Questionnaire",
+    "MessageHistory"
     
   ];
 
